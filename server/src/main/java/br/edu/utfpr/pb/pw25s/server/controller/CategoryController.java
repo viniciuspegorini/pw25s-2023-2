@@ -52,7 +52,7 @@ public class CategoryController {
     }
 
     @GetMapping("page")
-    // http://localhost:8025/categories/page?page=1&size=5&order=name&asc=true
+    // http://localhost:8025/categories/page?page=0&size=5&order=name&asc=true
     public ResponseEntity<Page<Category>> findAllPaged(
                                 @RequestParam int page,
                                 @RequestParam int size,
