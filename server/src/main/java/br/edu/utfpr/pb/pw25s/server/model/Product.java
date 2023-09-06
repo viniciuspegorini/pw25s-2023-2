@@ -20,6 +20,10 @@ public class Product {
 
     private String description;
 
-    private Double value;
+    @Column
+    private Double price;
+
+    @ManyToOne
+    private Category category;
 
 }
