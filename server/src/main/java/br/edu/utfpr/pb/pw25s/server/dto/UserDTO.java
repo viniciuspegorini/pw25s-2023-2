@@ -1,19 +1,21 @@
-package br.edu.utfpr.pb.pw25s.server.model;
+package br.edu.utfpr.pb.pw25s.server.dto;
 
 import br.edu.utfpr.pb.pw25s.server.annotation.UniqueUsername;
-import jakarta.persistence.*;
+import br.edu.utfpr.pb.pw25s.server.model.User;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "tb_user")
 @Data
-public class User {
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class UserDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull(message = "{br.edu.utfpr.pb.pw25s.server.model.User.NotNull.message}")
@@ -28,8 +30,7 @@ public class User {
     @NotNull
     @Size(min = 6)
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$",
-    message = "{br.edu.utfpr.pb.pw25s.server.model.User.Password.Pattern.message}")
+            message = "{br.edu.utfpr.pb.pw25s.server.model.User.Password.Pattern.message}")
     private String password;
-
 
 }
