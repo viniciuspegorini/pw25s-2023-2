@@ -50,8 +50,8 @@ Os metadados do projeto são:
 - Group: **br.edu.utfpr.pb.tads**
 - Artifact: **server**
 - Options:
-    - Packaging: **Jar**
-    - Java: **17** ou superior.
+  - Packaging: **Jar**
+  - Java: **17** ou superior.
 
 Em dependências devem ser selecionados os *frameworks*:
 - Spring Data JPA
@@ -69,11 +69,11 @@ O projeto está configurado e pode ser realizado o **download** do mesmo e **imp
 O projeto Spring Boot vêm com uma série de configurações inicias que não precisamos nos preocupar, iniciando com a classe principal da aplicação a **ServerApplication**, nela por meio da anotação **@SpringBootApplication** todas as configurações serão carregadas. O **Spring Security** por exemplo, já vem pré-configurado protegendo todas as URLs, como ainda não vamos configurar, é necessário adicionar a propriedade **exclude = SecurityAutoConfiguration.class**, dessa maneira o **SpringBoot** vai ignorar as configurações de segurança, na sequência do desenvolvimento essa configuração será alterada para o processo de autenticação e autorização funcionar. O banco de dados em memória utilizando o **H2** também já é criado por padrão nesse momento, ou seja, todas as configurações necessárias para o início do desenvolvimento estão prontas.
 
 ```java
-@SpringBootApplication(exclude = SecurityAutoConfiguration.class)  
-public class ServerApplication {  
-   public static void main(String[] args) {  
-      SpringApplication.run(ServerApplication.class, args);  
-  }   
+@SpringBootApplication(exclude = SecurityAutoConfiguration.class)
+public class ServerApplication {
+  public static void main(String[] args) {
+    SpringApplication.run(ServerApplication.class, args);
+  }
 }
 ``` 
 Com as configurações básicas definidas será possível iniciar o desenvolvimento do projeto.
@@ -101,18 +101,18 @@ Dentro da classe  **UserControllerTest** será criado o método ***postUser_when
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 public class UsuarioControllerTest {
-	@Autowired
-	TestRestTemplate testRestTemplate;
-	
-	@Test
-	public void postUser_whenUserIsValid_receiveOk() {
-		User user = new User();
-		user.setUsername(“test-user”);
-		user.setDisplayName(“test-Display”);
-		user.setPassword(“P4ssword”);
-		ResponseEntity<Object> response = testRestTemplate.postForEntity(“/users”, user, Object.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-	}
+  @Autowired
+  TestRestTemplate testRestTemplate;
+
+  @Test
+  public void postUser_whenUserIsValid_receiveOk() {
+    User user = new User();
+    user.setUsername(“test-user”);
+    user.setDisplayName(“test-Display”);
+    user.setPassword(“P4ssword”);
+    ResponseEntity<Object> response = testRestTemplate.postForEntity(“/users”, user, Object.class);
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+  }
 }
 ```
 
@@ -123,9 +123,9 @@ package br.edu.utfpr.pb.tads.model;
 
 @Data
 public class User {
-	private String username;
-	private String displayName;
-	private String password;
+  private String username;
+  private String displayName;
+  private String password;
 }
 ```
 O próximo passo é criar a versão inicial da classe **UserController**, dentro do pacote **br.edu.utfpr.pb.tads.controller**, essa classe deve ter um método que aceita uma requisição do tipo HTTP Post para a URL  */users*. Por meio da anotação **@RestController** uma classe pode criar métodos para receber requisições HTTP. A anotação **@RequestMapping("users")** serve para que essa classe trate todas as requisições vindas em **/users**, independente do método HTTP. Por fim, foi criado o método **createUser()** o qual, por meio da anotação **@PostMapping** irá atender uma requisição do tipo HTTP POST na URL */users*. Feito isso podemos executar nosso teste. Ele vai passar, por mais que o método não tenha nada implementado, ao ser chamado ele vai retornar um ***HTTP Status: 200 OK***, parâmetro esperado pelo primeiro teste criado. Ou seja, agora foi criada a primeira parte da API REST.
@@ -135,9 +135,9 @@ O próximo passo é criar a versão inicial da classe **UserController**, dentro
 @RequestMapping("users")
 public class UserController {
 
-	@PostMapping
-	void createUser() {
-	}
+  @PostMapping
+  void createUser() {
+  }
 }
 ```
 
@@ -146,16 +146,16 @@ O próximo teste será utilizado para verificar se após receber a requisição 
 ```java
 //...
 public class UsuarioControllerTest {
-	@Autowired
-	UserRepository userRepository;
-	//...
-	@Test
-	public void postUser_whenUserIsValid_userSavedToDatabase() {
-		User user = createValidUser();
-		testRestTemplate.postForEntity(“/users”, user, Object.class);
-		// Agora precisamos garantir que tudo foi salvo no Banco de Dados.
-		assertThat(userRepository.count()).isEqualTo(1);
-	}
+  @Autowired
+  UserRepository userRepository;
+  //...
+  @Test
+  public void postUser_whenUserIsValid_userSavedToDatabase() {
+    User user = createValidUser();
+    testRestTemplate.postForEntity(“/users”, user, Object.class);
+    // Agora precisamos garantir que tudo foi salvo no Banco de Dados.
+    assertThat(userRepository.count()).isEqualTo(1);
+  }
 }
 ```
 O primeiro passo para resolver o teste é fazer com que a classe **User** possa ser lida como uma entidade que pode ser persistida no banco de dados por meio da anotação **@Entity**. Toda a classe que é mapeada com @Entity deve possuir uma chave primária e a mesma deve ser anotada com **@Id**. Além disso é necessário informar como será gerado o incremento da chave primária, o que deve ser feito por meio da anotação **@GeneratedValue**, a qual por padrão incrementa o **Id** automaticamente somando 1 ao valor da chave primária a cada novo registro.
@@ -166,10 +166,10 @@ O primeiro passo para resolver o teste é fazer com que a classe **User** possa 
 @Data
 public class User {
 
-	@Id
-	@GeneratedValue
-	private long id;
-	private String username;
+  @Id
+  @GeneratedValue
+  private long id;
+  private String username;
 	\\... o restante da classe permanece igual
 }
 ```
@@ -184,31 +184,31 @@ Agora é possível utilizar a interface **UserRepository ** para persistir um us
 ```java
 @Service
 public class UserService {
-	UserRepository userRepository;
-	
-	public UserService(UserRepository userRepository) {
-		super();
-		this.userRepository = userRepository;
-	}
-	public User save (User user){
-		return userRepository.save(user);
-	}
+  UserRepository userRepository;
+
+  public UserService(UserRepository userRepository) {
+    super();
+    this.userRepository = userRepository;
+  }
+  public User save (User user){
+    return userRepository.save(user);
+  }
 }
 ```
 
 Para salvar o usuário basta fazer a injeção de **UserService **, então utilizar o método ***userService.save()*** que espera como parâmetro de entrada um objeto do tipo **User**, o objeto será persistido no banco de dados. Nesse momento é possível executar o teste e o mesmo vai passar.
 
 ```java
-@RestController  
-@RequestMapping("users")  
-public class UserController {  
-	@Autowired  
-	private UserService userService;  
-  
-    @PostMapping  
-	void createUser(@RequestBody User user) {  
-        userService.save(user);    
-	}
+@RestController
+@RequestMapping("users")
+public class UserController {
+  @Autowired
+  private UserService userService;
+
+  @PostMapping
+  void createUser(@RequestBody User user) {
+    userService.save(user);
+  }
 }
 ```
 Para evitar problemas durante a execução dos testes é importante limpar o banco de dados a cada execução, para isso vamos criar um método que remove os registros do banco a cada execução.
@@ -233,8 +233,8 @@ spring:
     generate-unique-name: false
   h2:
     console:
-	  enabled: true
-	  path: /h2-console
+    enabled: true
+    path: /h2-console
 ```
 
 Ao acessar a URL **http://localhost:8080/h2-console** em um navegador irá abrir a tela de conexão do **H2** a configuração está praticamente pronta, bastando alterar a URL de conexão com o banco para: **jdbc:h2:mem:testdb**. Ao clicar para realizar a conexão temos acesso ao banco de dados gerado, por enquanto foi criada apenas a tabela **User**, ao clicar na tabela é habilitado o console no qual podemos realizar consultas. Ao fazer um **select * from user** e executar o comando recebemos uma tabela vazia como resultado, para adicionar um usuário no banco de dados será utilizados o Postman.
@@ -258,72 +258,72 @@ No próximo teste será retornado ao cliente que chama a API além do **status H
 ```java
 //...
 public class UsuarioControllerTest {
-	//...
-	
-	@Test
-	public void postUser_whenUserIsValid_receiveSuccessMessage() {
-	User user = createValidUser();
-	ResponseEntity<GenericResponse> response = testRestTemplate.postForEntity(API_USERS, user, GenericResponse.class);
-	assertThat(response.getBody().getMessage()).isNotNull();
-	}
-	//...
+  //...
+
+  @Test
+  public void postUser_whenUserIsValid_receiveSuccessMessage() {
+    User user = createValidUser();
+    ResponseEntity<GenericResponse> response = testRestTemplate.postForEntity(API_USERS, user, GenericResponse.class);
+    assertThat(response.getBody().getMessage()).isNotNull();
+  }
+  //...
 }
 ```
 
 A classe **GenericResponse** será criada no pacote **br.edu.utfpr.pb.tads.shared** e por enquanto terá apenas o atributo **message**.
 
 ```java
-@Data  
-@NoArgsConstructor  
-public class GenericResponse { 
-    private String message;
-    public GenericResponse(String message) {
-        this.message = message;
-    }  
+@Data
+@NoArgsConstructor
+public class GenericResponse {
+  private String message;
+  public GenericResponse(String message) {
+    this.message = message;
+  }
 }
 ```
 A próxima alteração de código será realizado no método **createUser()** da classe **UserController**, que agora deverá retornar um objeto do tipo **GenericResponse**. Após essa alteração o teste criado irá passar. Para visualizar o comportamento na prática a requisição pode ser realizada novamente por meio do Postman.
 
 ```java
     \\...
-    @PostMapping
+@PostMapping
     GenericResponse createUser(@RequestBody User user) {
         userService.save(user);
         return new GenericResponse("Registro salvo");
-    }
-    \\...
+        }
+        \\...
 ```
 
 Com essa etapa finalizada, agora serão adicionadas algumas melhorias no código e na maneira com que os dados são persistidos. Ao fazer o **select** no banco de dados é possível observar que a coluna **password** está sendo armazenada como texto, o que não é uma boa prática. O teste a seguir irá validar se a senha salva no banco está diferente da senha que foi enviada para cadastro, o que sinaliza que ela estará criptografada no banco de dados.
 
 ```java
     \\...
-    @Test 
-    public void postUser_whenUserIsValid_passwordIsHashedInDatabase() {
+@Test
+public void postUser_whenUserIsValid_passwordIsHashedInDatabase() {
         User user = createValidUser();
         testRestTemplate.postForEntity(API_USERS, user, Object.class);
         List<User> users = userRepository.findAll();
         User userBD = users.get(0);
         assertThat(userBD.getPassword()).isNotEqualTo(user.getPassword());
-    }
-    \...
+        }
+        \...
 ```
 A criptografia da senha será realizada na classe **UserService** para evitar que regras de negócio da aplicação sejam implementadas na classe ***controller***. Para criptografia da senha será utilizada a classe **BCryptPasswordEncoder**[6]. Ao executar o método **bCryptPasswordEncoder.encode()** a senha será criptografada antes de ser salva no banco. Ao executar o teste ele vai passar. Para visualizar na prática só executar a requisição via Postman e conferir no console do **H2**.
 
 ```java
-@Service  
-public class UserService { 
-    UserRepository userRepository;
-    BCryptPasswordEncoder bCryptPasswordEncoder;  
-    
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-        this.bCryptPasswordEncoder = new BCryptPasswordEncoder();
-    }
-    public User save(User user) {
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()) );
-        return userRepository.save(user);
-    }
+@Service
+public class UserService {
+  UserRepository userRepository;
+  BCryptPasswordEncoder bCryptPasswordEncoder;
+
+  public UserService(UserRepository userRepository) {
+    this.userRepository = userRepository;
+    this.bCryptPasswordEncoder = new BCryptPasswordEncoder();
+  }
+  public User save(User user) {
+    user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()) );
+    return userRepository.save(user);
+  }
 }
 ```
 Com isso finalizamos o básico do cadastro de usuário na API, agora será realizada a validação dos dados obrigatórios do usuário, pois por enquanto é possível cadastrar um usuário sem informar todos os dados, pois os mesmos não estão sem validados.
@@ -338,41 +338,41 @@ Nesse primeiro teste será validado o caso de recebimento do campo **username** 
 
 ```java
 //...
-public class UsuarioControllerTest { 
-    //...
-    @Test 
-    public void postUser_whenUserHasNullUsername_receiveBadRequest() {
-        User user = createValidUser();
-        user.setUsername(null);
-        ResponseEntity<Object> response = postSignUp(user, Object.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    }
-    //...
+public class UsuarioControllerTest {
+  //...
+  @Test
+  public void postUser_whenUserHasNullUsername_receiveBadRequest() {
+    User user = createValidUser();
+    user.setUsername(null);
+    ResponseEntity<Object> response = postSignUp(user, Object.class);
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+  }
+  //...
 }
 ```
 Para resolver esse teste o inicialmente será adicionada a anotação **@NotNull** (importada de: import javax.validation.constraints.NotNull;) no campo **username** da classe **User**, conforme o código abaixo.
 
 ```java
-@Data  
-@Entity(name = "tb_user")  
-public class User {  
-  
-    @Id 
-    @GeneratedValue
-    private long id;  
-    
-    @NotNull
-    private String username;
-    private String displayName;  
-    private String password;  
+@Data
+@Entity(name = "tb_user")
+public class User {
+
+  @Id
+  @GeneratedValue
+  private long id;
+
+  @NotNull
+  private String username;
+  private String displayName;
+  private String password;
 }
 ```
 
 Com a anotação feita será delegado ao controller (**UserController**) validar o usuário antes da entrada no método que realiza a persistência dos dados. Será utilizada a anotação @Valid (importado de: import javax.validation.Valid;) antes da declaração do objeto user no médoto *createUser()*. Com isso o campo será validado e o cliente da API irá receber uma mensagem criada pelo Spring informando que o campo username não pode ser nulo.
 
 ```java
-@RestController  
-@RequestMapping("users")  
+@RestController
+@RequestMapping("users")
 public class UserController {
   private final UserService userService;
 
@@ -392,35 +392,35 @@ O mesmo teste (**UserControllerTest**) será realizado para o campo **password**
 
 ```java
     @Test
-    public void postUser_whenUserHasNullPassword_receiveBadRequest() {
+public void postUser_whenUserHasNullPassword_receiveBadRequest() {
         User user = createValidUser();
         user.setPassword(null);
         ResponseEntity<Object> response = postSignUp(user, Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    }
+        }
 ```
 
 Para resolver o teste será adicionada a anotação **@NotNull** no atributo **password**. E será a única modificação necessária, pois o **@Valid** presente na classe **UserController** será responsável por todas as validações necessárias de cada atributo da classe **User**. Existem outras validações que podem ser utilizadas nos atributos das classes, para conhecê-las basta acessar a documentação do  Java Bean Validation [7]. No código abaixo algumas outras anotações foram adicionadas nos atributos da classe **User**.
 ```java
-@Data  
-@Entity(name = "tb_user")  
-public class User {  
-  
-    @Id 
-    @GeneratedValue  
-    private long id;  
-    
-    @NotNull 
-    @Size(min = 4, max = 255)  // valida para que o campo tenha entre 4 e 255 caracteres
-    private String username;  
-    
-    @NotNull 
-    private String displayName;  
-    
-    @NotNull 
-    @Size(min = 6, max = 254) 
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$")   //valida para que o campo tenha pelo menos 1 letra maiúscula, 1 letra minúscula e 1 número.
-    private String password; 
+@Data
+@Entity(name = "tb_user")
+public class User {
+
+  @Id
+  @GeneratedValue
+  private long id;
+
+  @NotNull
+  @Size(min = 4, max = 255)  // valida para que o campo tenha entre 4 e 255 caracteres
+  private String username;
+
+  @NotNull
+  private String displayName;
+
+  @NotNull
+  @Size(min = 6, max = 254)
+  @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$")   //valida para que o campo tenha pelo menos 1 letra maiúscula, 1 letra minúscula e 1 número.
+  private String password;
 }
 ```
 
@@ -432,10 +432,10 @@ O primeiro passo a ser realizado para o **Spring Security** funcionar é retirar
 
 ```java
 @SpringBootApplication
-public class ServerApplication {  
-   public static void main(String[] args) {  
-      SpringApplication.run(ServerApplication.class, args);  
-  }   
+public class ServerApplication {
+  public static void main(String[] args) {
+    SpringApplication.run(ServerApplication.class, args);
+  }
 }
 ``` 
 
@@ -778,9 +778,12 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 ```
 Com o Token validado e o usuário autenticado e autorizado adicionado adicionado no contexto do Spring Security, qualquer **endpoint** da aplicação que necessite de autorização para acesso precisa ser acessado enviando o token gerado durante a autenticação.
 
-## Criação dos CRUDs de Categoria e Produto
+## Criação dos _endpoints_ para as operações de CRUD de Categoria e Produto
 
-Com o processo de criação de usuário e autenticação funcionando, agora serão criadas as novas funcionalidades da API. Vamos criar as operações de **CRUD** para classe que irá armazenar a categoria que será relacionada ao produto. Para isso deverá ser criado o **model**, o **repository**, o **service** e o **controller**. Agora deverá ser criada a classe **Category** com os atributos **id** e **name**:
+Com o processo de criação de usuário e autenticação funcionando, agora serão criadas as novas funcionalidades da API. Vamos criar as operações de **CRUD** para classe que irá armazenar a categoria que será relacionada ao produto. Para isso deverá ser criado o **model**, o **repository**, o **service** e o **controller**.
+
+
+Para representar uma categoria será criada a classe **Category** com os atributos **id** e **name**:
 
 ```java
 @Entity  
@@ -814,13 +817,13 @@ public class Category {
     }  
 }
 ```
-Para disponibilizar as operações de CRUD  da aplicação será criada a *interface* **CategoryRepository**.
+Para disponibilizar as operações de CRUD  da aplicação será criada a *interface* **CategoryRepository** que irá herdar as características de ***JpaRepository***, essa interface que faz parte do _framework_ Springn Data irá fornecer as operações de CRUD sem que seja necessário outras implementações.
 
 ```java
 public interface CategoryRepository extends JpaRepository<Category, Long> {  
 }
 ```
-Agora será adicionada uma camada de ***service***, assim caso existam regras de negócio, regradas de validação, etc., essas funcionalidades podem ser adicionadas no *service*,  melhorando a manutenibilidade do código. Será criada a *interface* **ICategoryService** no pacote **service** e na sequência será criada a implementação dessa *interface* no pacote **service.impl** com o nome de **CategoryServiceImpl**.
+Agora será adicionada uma camada de ***service***, assim caso existam regras de negócio, regradas de validação, etc., essas funcionalidades podem ser adicionadas no *service*,  melhorando a estrutura do código-fonte. Será criada a *interface* **ICategoryService** no pacote **service** e na sequência será criada a implementação dessa *interface* no pacote **service.impl** com o nome de **CategoryServiceImpl**.
 
 
 ```java
@@ -874,25 +877,43 @@ public class CategoryServiceImpl implements ICategoryService {
     }  
 }
 ```
-No desenvolvimento do *controller* de categoria serão criados métodos para salvar, editar, listar e remover um registro de categoria. Além de um método para retornar o número de registros e se existe um registro na base de dados com o código informado.
+No próximo passo será criada a classe que irá atuar como controlador das operações com categoria. No desenvolvimento do ***controller*** de categoria serão criados métodos para salvar, editar, listar e remover um registro de categoria. Além de um método para retornar o número de registros e se existe um registro na base de dados com o código informado. O _framework_ Spring Web será utilizado como base para desenvolvimento desse _controller_, iniciando pela anotação ***@RestController***, que indica que esse controlador irá atender requisições HTTP na URL `/categories` como pode ser observado na anotação ***@RequestMapping("categories")*** .
+
+No construtor da classe **CategoryController** é realizada a injeção de dependência do **service** de categoria (ICategoryService), pois é por meio dele que serão realizadas as operações com ligação ao banco de dados.
+
+O primeiro método implementado é o ***findAll()***, que retorna uma lista de categorias quando ocorrer uma requisição do tipo HTTP GET na URL `/categories`. Os demais métodos são apresentados nos comentários do código baixo.
 
 ```java
 @RestController  
 @RequestMapping("categories")  
-public class CategoryController {  
+public class CategoryController {
+	  
     private final ICategoryService categoryService;  
 
     public CategoryController(ICategoryService categoryService) {  
         this.categoryService = categoryService;  
     }  
   
+	// O Método findAll() é executando quando é realizada uma
+	// requisição do tipo GET para:
+	// http://localhost:8025/categories
+	// e o retorno será um json no formato:
+	// [{id:1, name: "Category One"}, {...}, ...]
     @GetMapping  
 	public ResponseEntity<List<Category>> findAll() {  
         return ResponseEntity.ok(categoryService.findAll());  
     }  
   
+    // O Método create() é executando quando é realizada uma
+	// requisição do tipo POST para:
+	// http://localhost:8025/categories
+	// Recebe como parâmetro um objeto JSON no formato:
+	// {id: null, name: "Category One"}
+	// e o retorno será um json no formato:
+	// {id:1, name: "Category One"}
+	// Ou seja a categoria com o ID gerado ao armazenar o registro no banco de dados
     @PostMapping  
-  public ResponseEntity<Category> create(@RequestBody @Valid Category category) {  
+    public ResponseEntity<Category> create(@RequestBody @Valid Category category) {  
         categoryService.save(category);  
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()  
                 .path("/{id}")  
@@ -900,12 +921,24 @@ public class CategoryController {
   
         return ResponseEntity.created( location ).body( category );  
     }  
-  
+    // O Método findOne() é executando quando é realizada uma
+	// requisição do tipo GET para:
+	// http://localhost:8025/categories/1 
+	// onde o 1 é o ID da categoria que deverá ser retornada,
+	//e o retorno será um json no formato:
+	// {id:1, name: "Category One"}
     @GetMapping("{id}") //http://localhost:8025/categories/1  
-  public ResponseEntity<Category> findOne(@PathVariable("id") Long id) {  
+    public ResponseEntity<Category> findOne(@PathVariable("id") Long id) {  
         return ResponseEntity.ok(categoryService.findOne(id));  
     }  
-  
+
+	// O Método delete() é executando quando é realizada uma
+	// requisição do tipo DELETE para:
+	// http://localhost:8025/categories/1 
+	// onde o 1 é o ID da categoria que deverá ser removida,
+	//e o retorno, no caso de sucesso será
+	//um corpo de requisição vazio com o status:
+	// 204 - NO CONTENT
     @DeleteMapping("{id}")  
     @ResponseStatus(HttpStatus.NO_CONTENT)  
     public void delete(@PathVariable Long id) {  
@@ -930,8 +963,410 @@ public class CategoryController {
 }
 ```
 
+Agora será criada a classe **Product** para que possamos realizar as operações de CRUD com produtos e a classe **repository** que herda as características de **JpaRepository**.
+
+```java
+@Entity  
+@Table(name = "tb_product")  
+@AllArgsConstructor  
+@NoArgsConstructor  
+@Builder  
+public class Product {  
+  
+    @Id  
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  
+    @Getter @Setter  
+    private Long id;  
+  
+    @NotNull  
+    @Getter @Setter  
+    private String name;  
+  
+    @NotNull  
+    @Column(length = 1024)  
+    @Getter @Setter  
+    private String description;  
+  
+    @NotNull  
+    @Getter @Setter  
+    private BigDecimal price;  
+  
+    @ManyToOne  
+    @JoinColumn(name = "category_id", referencedColumnName = "id")  
+    @Getter @Setter  
+    private Category category;
+ }
+```
+Interface **ProductRepository **:
+```java
+public interface ProductRepository extends JpaRepository<Product, Long> {  
+}
+```
+Os códigos da interface e implementação da camada ***service*** e ***controller*** seguem a mesma lógica que as que foram criadas para o CRUD de categoria. Seguindo as boas práticas de orientação a objetos o próximo passo é a criação de interfaces e classes genéricas para reduzir a quantidade de códigos redundantes.
+
 ## Melhorando o Código: adicionando herança
-TO-DO
+
+### Criando a classe abstrata na camada _Service_
+Na camada ***service*** serão criadas a _interface_ genérica  **ICrudService** e a classe abstrata **CrudServiceImpl**. Como parâmetros para herdar da interface deverão ser passados a classe "T" e a chave primária "ID".
+```java
+public interface ICrudService<T, ID extends Serializable> {  
+    List<T> findAll();  
+    List<T> findAll(Sort sort);    
+    Page<T> findAll(Pageable pageable);  
+    T save(T entity);  
+    T saveAndFlush(T entity);  
+    Iterable<T> save(Iterable<T> iterable);  
+    void flush();  
+    T findOne(ID id);  
+    boolean exists(ID id);  
+    long count();  
+    void delete(ID id);  
+    void delete(Iterable<? extends T> iterable);  
+    void deleteAll();  
+}
+```
+A implementação da interface é realizada na classe **CrudServiceImpl** que irá conter a implementação genérica de todos os métodos CRUD. Essa classe abstrata possui um método abstrato ( ***getRepository()*** ), esse método é utilizado para retornar um objeto do tipo **JpaRepository**  responsável por realizar as operações com o banco de dados.
+
+```java
+public abstract class CrudServiceImpl<T, ID extends Serializable> implements ICrudService<T, ID> {  
+  
+    protected abstract JpaRepository<T, ID> getRepository();  
+  
+    @Override  
+    public List<T> findAll() {  
+        return getRepository().findAll();  
+    }  
+  
+    @Override  
+    public List<T> findAll(Sort sort) {  
+        return getRepository().findAll(sort);  
+    }  
+  
+    @Override  
+    public Page<T> findAll(Pageable pageable) {  
+        return getRepository().findAll(pageable);  
+    }  
+  
+    @Override  
+    public T save(T entity) {  
+        return getRepository().save(entity);  
+    }  
+  
+    @Override  
+    public T saveAndFlush(T entity) {  
+        return getRepository().saveAndFlush(entity);  
+    }  
+  
+    @Override  
+    public Iterable<T> save(Iterable<T> iterable) {  
+        return getRepository().saveAll(iterable);  
+    }  
+  
+    @Override  
+    public void flush() {  
+        getRepository().flush();  
+    }  
+  
+    @Override  
+    public T findOne(ID id) {  
+        return getRepository().findById(id).orElse(null);  
+    }  
+  
+    @Override  
+    public boolean exists(ID id) {  
+        return getRepository().existsById(id);  
+    }  
+  
+    @Override  
+    @Transactional(readOnly = true)  
+    public long count() {  
+        return getRepository().count();  
+    }  
+  
+    @Override  
+    public void delete(ID id) {  
+        getRepository().deleteById(id);  
+    }  
+  
+    @Override  
+    public void delete(Iterable<? extends T> iterable) {  
+        getRepository().deleteAll(iterable);  
+    }  
+  
+    @Override  
+    public void deleteAll() {  
+        getRepository().deleteAll();  
+    }  
+}
+```
+### Criando a classe abstrata na camada _Controller_
+
+Também com o objetivo de reduzir a quantidade de código repetida entre as classes da aplicação será criada uma classe abstrata para a camada de ***controller***. A classe **CrudController ** irá receber três parâmetros: **T** - classe principal, **D** - *data transfer object* (DTO) e **ID** - chave primária. Foram criados dois métodos abstratos, o ***getService()*** que será a instância da camada ***service*** para as operações de CRUD e o ***getModelMapper()*** que será responsável pela conversão da classe principal para DTO e vise-versa. Além disso, foi criado um construtor com dois parâmetros para receber o tipo das classes principal e DTO, os quais serão utilizados pelo ***modelMapper** para realizar a conversão dos objetos.
+
+O padrão DTO é utilizado na transferência de dados entre as camadas de uma aplicação, no nosso caso entre a aplicação cliente e a API. Pode ser que em alguns momentos nem sempre o model que representa a entidade que será armazenada no banco de dados reflete os dados vindos do cliente. Ou ainda os dados que consultamos no banco precisam ser formatados antes de enviar para o lado cliente, para isso podemos utilizar o padrão DTO.
+
+```java
+// T = class type, D = dto type, ID = attribute related to primary key type  
+public abstract class CrudController <T, D, ID extends Serializable> {  
+  
+    protected abstract ICrudService<T, ID> getService();  
+    protected abstract ModelMapper getModelMapper();  
+    private final Class<T> typeClass;  
+    private final Class<D> typeDtoClass;  
+  
+    public CrudController(Class<T> typeClass, Class<D> typeDtoClass) {  
+        this.typeClass = typeClass;  
+        this.typeDtoClass = typeDtoClass;  
+    }  
+  
+    private D convertToDto(T entity) {  
+        return getModelMapper().map(entity, this.typeDtoClass);  
+    }  
+  
+    private T convertToEntity(D entityDto) {  
+        return getModelMapper().map(entityDto, this.typeClass);  
+    }  
+  
+    @GetMapping //http://ip.api:port/classname  
+    public ResponseEntity<List<D>> findAll() {  
+        return ResponseEntity.ok(  
+                getService().findAll().stream().map(  
+                        this::convertToDto).collect(Collectors.toList()  
+                )  
+        );  
+    }  
+  
+    @GetMapping("page")  //http://ip.api:port/classname/page  
+  public ResponseEntity<Page<D>> findAll(  
+                        @RequestParam int page,  
+                        @RequestParam int size,  
+                        @RequestParam(required = false) String order,  
+                        @RequestParam(required = false) Boolean asc  
+                    ) {  
+        PageRequest pageRequest = PageRequest.of(page, size);  
+        if (order != null && asc != null) {  
+            pageRequest = PageRequest.of(page, size,  
+                    asc ? Sort.Direction.ASC : Sort.Direction.DESC, order);  
+        }  
+        return ResponseEntity.ok(  
+                getService().findAll(pageRequest).map(this::convertToDto)  
+        );  
+    }  
+  
+    @GetMapping("{id}")  
+    public ResponseEntity<D> findOne(@PathVariable ID id) {  
+        T entity = getService().findOne(id);  
+        if ( entity != null) {  
+            return ResponseEntity.ok(convertToDto(entity));  
+        } else {  
+            return ResponseEntity.noContent().build();  
+        }  
+    }  
+  
+    @PostMapping  
+    public ResponseEntity<D> create(@RequestBody @Valid D entity) {  
+        return ResponseEntity.status(HttpStatus.CREATED)  
+                .body(convertToDto(getService().save(convertToEntity(entity))));  
+  
+    }  
+  
+    @PutMapping("{id}")  
+    public ResponseEntity<D> update(@PathVariable ID id, @RequestBody @Valid D entity) {  
+        return ResponseEntity.status(HttpStatus.OK)  
+                .body(convertToDto(getService().save(convertToEntity(entity))));  
+  
+    }  
+  
+    @GetMapping("exists/{id}")  
+    public ResponseEntity<Boolean> exists(@PathVariable ID id) {  
+        return ResponseEntity.ok(getService().exists(id));  
+    }  
+  
+    @GetMapping("count")  
+    public ResponseEntity<Long> count() {  
+        return ResponseEntity.ok(getService().count());  
+    }  
+  
+    @DeleteMapping("{id}")  
+    public ResponseEntity<Void> delete(@PathVariable ID id) {  
+        getService().delete(id);  
+        return ResponseEntity.noContent().build();  
+    }  
+  
+}
+```
+
+### Implementando o CRUD de Categoria com base na nova estrutura
+
+Inicialmente será ajustada a interface de categoria, **ICategoryService**, que agora ficará com o seguinte conteúdo:
+
+```java
+public interface ICategoryService extends ICrudService<Category, Long> {  
+}
+```
+Como estamos herdando as características de **ICrudService** não é necessário reescrever a assinatura de todos os métodos. Na sequência é apresentada a implementação do ***service** de categoria:
+
+```java
+@Service  
+public class CategoryServiceImpl extends CrudServiceImpl<Category, Long>  
+        implements ICategoryService {  
+  
+    private final CategoryRepository categoryRepository;  
+  
+    public CategoryServiceImpl(CategoryRepository categoryRepository) {  
+        this.categoryRepository = categoryRepository;  
+    }  
+  
+    @Override  
+    protected JpaRepository<Category, Long> getRepository() {  
+        return categoryRepository;  
+    }  
+}
+```
+A lógica é a mesma, estamos herdando as características da classe abstrata **CrudServiceImpl**, por isso todos os métodos lá implementados estarão disponíveis para as instâncias de **CategoryServiceImpl**. Novos métodos específicos para Categoria quando implementados devem primeiro ser declarados na interface ICategoryService e então implementados na classe CategoryServiceImpl.
+
+Antes de implementar a classe controladora, vamos criar o DTO de categoria:
+
+```java
+@Data  
+public class CategoryDTO {  
+  
+    private Long id;  
+  
+    @NotNull  
+    @Size(min = 2, max = 50)  
+    private String name;  
+}
+```
+
+A camada de ***controller*** se assemelha a camada de serviços, em que as características serão herdadas da classe **CrudController**. A classe **CategoryController** ficará com a seguinte estrutura:
+
+```java
+@RestController  
+@RequestMapping("categories")  
+public class CategoryController extends CrudController<Category, CategoryDTO, Long> {  
+  
+    private static ICategoryService categoryService;  
+    private static ModelMapper modelMapper;  
+  
+    public CategoryController(ICategoryService categoryService,  
+                              ModelMapper modelMapper) {  
+        super(Category.class, CategoryDTO.class);  
+        CategoryController.categoryService = categoryService;  
+        CategoryController.modelMapper = modelMapper;  
+    }  
+  
+    @Override  
+    protected ICrudService<Category, Long> getService() {  
+        return CategoryController.categoryService;  
+    }  
+  
+    @Override  
+    protected ModelMapper getModelMapper() {  
+        return CategoryController.modelMapper;  
+    }  
+}
+```
+
+As anotações  `@RestController` e `@RequestMapping("categories")` são mantidas, assim como a instância do objeto da camada ***service**. Entretanto agora foi adicionado a instância do objeto **modelMapper** e também foi chamado o construtor da classe abstrata passando o tipos: **Category.class** e **CategoryDTO.class**.
+
+Agora a implementação da estrutura para entidade de Produto ficará mais simples.
+
+### Implementando o CRUD de Produto com base na nova estrutura
+
+Serão apresentadas na sequência a _interface_ **IProductService**, a classe **ProductServiceImpl**, a classe **ProductDTO** e a classe **ProductController**.
+
+#### IProductService
+```java
+public interface IProductService extends ICrudService<Product, Long> {  
+}
+```
+
+#### ProductServiceImpl
+```java
+@Service  
+public class ProductServiceImpl extends CrudServiceImpl<Product, Long>  
+            implements IProductService {  
+  
+    private final ProductRepository productRepository;  
+  
+    public ProductServiceImpl(ProductRepository productRepository) {  
+        this.productRepository = productRepository;  
+    }  
+  
+    @Override  
+    protected JpaRepository<Product, Long> getRepository() {  
+        return productRepository;  
+    }  
+}
+```
+#### ProductDTO
+```java
+@Data  
+public class ProductDTO {  
+  
+    private Long id;  
+  
+    @NotNull  
+  private String name;  
+  
+    @NotNull  
+  private String description;  
+  
+    @NotNull  
+  private BigDecimal price;  
+  
+    private CategoryDTO category;  
+}
+```
+#### ProductController
+
+```java
+@RestController  
+@RequestMapping("products")  
+public class ProductController extends CrudController<Product, ProductDTO, Long> {  
+  
+    private static IProductService productService;  
+  
+    private static ModelMapper modelMapper;  
+  
+    public ProductController(IProductService productService, ModelMapper modelMapper) {  
+        super(Product.class, ProductDTO.class);  
+        ProductController.productService = productService;  
+        ProductController.modelMapper = modelMapper;  
+    }  
+  
+    @Override  
+    protected ICrudService<Product, Long> getService() {  
+        return productService;  
+    }  
+  
+    @Override  
+    protected ModelMapper getModelMapper() {  
+        return modelMapper;  
+    }  
+}
+```
+Com isso todas as operações de CRUD tanto de categoria quanto produto estão implementadas. Para testá-las inicialmente é necessário executar a classe principal e após o projeto iniciado cadastrar um novo usuário na API, utilizando o software Postman, Insomnia ou similar podemos fazer um HTTP POST para:
+`http://localhost:8025/users`
+Adicionando no corpo da requisição um JSON com um usuário válido, por exemplo:
+`{"id": null, "displayName": "Jane Doe", "username":"test", "password":"P4ssword" }`
+
+Agora é possível autenticar-se, para isso basta realizar uma chamada HTTP POST para:
+`http://localhost:8025/login`
+Adicionando no corpo da requisição um JSON com o ***username*** e ***password***:
+`{"username":"test", "password":"P4ssword" }`
+
+O retorno da requisição será um **token** JWT. Para testarmos os _endpoints_ do *controller* de categoria vamos precisar do token que acabamos de receber.
+Para cadastrar uma nova categoria podemos fazer uma requisição do tipo HTTP POST para URL:
+`http://localhost:8025/categories`
+Adicionando no corpo da requisição um JSON com as propriedades de categoria:
+`{"id": null, name":"Category Test"}`
+Além disso precisamos ir na aba de segurança do software Postman ou Insomnia e adicionar o **header** **Authorization** com o valor **Bearer token.gerado.nologin**. Após isso podemos enviar a requisição.
+Como retorno teremos o objeto com a categoria cadastrada, como o servidor retorna o próprio objeto ele virá com o ID gerado no momento da persistência da categoria.
+`{"id": 1, name":"Category Test"}`
+
+Os demais _endpoints_ da API seguem a mesma ideia, sendo que as URLs que precisam de autenticação sempre deverão receber um token válido.
 
 # Referências
 [1] Spring Framework, https://spring.io/.
