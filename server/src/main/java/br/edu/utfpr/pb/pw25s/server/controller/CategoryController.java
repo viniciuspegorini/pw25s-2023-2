@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -34,4 +35,7 @@ public class CategoryController extends CrudController<Category, CategoryDTO, Lo
     }
     @Override
     protected ModelMapper getModelMapper() { return modelMapper;   }
+
+    // Retorna o username do usuário autenticado
+    // SecurityContextHolder.getContext().getAuthentication().getName();
 }
