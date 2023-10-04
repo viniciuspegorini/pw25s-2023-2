@@ -64,7 +64,7 @@ Exemplo de entidades que podem ser utilizadas para o desenvolvimento da modelage
 ##### 3) Gerenciamento das movimentações financeiras:
  - Cada movimentação financeira deverá estar associada à uma conta e uma categoria.
  - Deverá ser possível cadastrar Receitas (valores recebidos).
- - Deverá ser possível cadastrar Receitas (valores recebidos).
+ - Deverá ser possível cadastrar Despesas (valores pagos).
  - Deverá ser possível cadastrar Transferências entre duas contas do próprio usuário.
  
 ##### 4) Categorias das movimentações:		
