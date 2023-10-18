@@ -12,47 +12,47 @@ export function UserSignupPage() {
     username: "",
     password: "",
   });
+  const [pendingApiCall, setPendingApiCall] = useState(false);
+  const [userSaved, setUserSaved] = useState('');
+  const [apiError, setApiError] = useState('');
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    
+
     setForm((previousState) => {
-        return {
-            ...previousState,
-            [name]: value,
-        };
+      return {
+        ...previousState,
+        [name]: value,
+      };
     });
 
     setErrors((previousState) => {
-        return {
-            ...previousState,
-            [name]: undefined,
-        };
+      return {
+        ...previousState,
+        [name]: undefined,
+      };
     });
   };
 
   const onClickSignup = () => {
-    console.log("Salvar um novo usuário");
-    // JSON com os dados do usuário { displayName, username, password}
-    console.log(form);
-    // Chamada ao endpoint de cadastro de usuário
-    console.log("TESTE Antes");
-    axios.post("http://localhost:8025/users", form)
-        .then((response) => {
-            console.log("TESTE Sucesso");
-            //console.log("Usuário salvo com sucesso");
-            //console.log(response.data);
-        })
-        .catch((responseError) => {
-            if (responseError.response.data.validationErrors) {
-                setErrors(responseError.response.data.validationErrors);
-            } 
-        })
-        .finally(() => {
-            console.log("TESTE Final");
-            //console.log("Sempre executa");
-        });
-    console.log("TESTE Depois do Axios");
+    setPendingApiCall(true);
+    axios
+      .post("http://localhost:8025/users", form)
+      .then((response) => {
+        setUserSaved(response.data.message);
+        setApiError('');
+      })
+      .catch((responseError) => {
+        if (responseError.response.data.validationErrors) {
+          setErrors(responseError.response.data.validationErrors);
+          
+          setApiError(responseError.response.data.message);
+          setUserSaved('');
+        }
+      })
+      .finally(() => {
+        setPendingApiCall(false);
+      });
   };
 
   return (
@@ -66,47 +66,78 @@ export function UserSignupPage() {
           <div className="form-floating mb-3">
             <input
               name="displayName"
-              className={errors.displayName ? "form-control is-invalid" : "form-control"}
+              className={
+                errors.displayName ? "form-control is-invalid" : "form-control"
+              }
               type="text"
               placeholder="Informe seu nome"
               onChange={onChange}
             />
             <label htmlFor="displayName">Informe seu nome</label>
-            {errors.displayName && <div className="invalid-feedback">{errors.displayName}</div>}
+            {errors.displayName && (
+              <div className="invalid-feedback">{errors.displayName}</div>
+            )}
           </div>
 
           <div className="form-floating mb-3">
             <input
               name="username"
-              className={errors.username ? "form-control is-invalid" : "form-control"}
+              className={
+                errors.username ? "form-control is-invalid" : "form-control"
+              }
               type="text"
               placeholder="Informe seu usuário"
               onChange={onChange}
             />
             <label htmlFor="username">Informe seu usuário</label>
-            {errors.username && <div className="invalid-feedback">{errors.username}</div>}
+            {errors.username && (
+              <div className="invalid-feedback">{errors.username}</div>
+            )}
           </div>
 
           <div className="form-floating mb-3">
             <input
               name="password"
-              className={errors.password ? "form-control is-invalid" : "form-control"}
+              className={
+                errors.password ? "form-control is-invalid" : "form-control"
+              }
               type="password"
               placeholder="Informe sua senha"
               onChange={onChange}
             />
             <label htmlFor="password">Informe sua senha</label>
-            {errors.password && <div className="invalid-feedback">{errors.password}</div>}
+            {errors.password && (
+              <div className="invalid-feedback">{errors.password}</div>
+            )}
           </div>
 
           <button
             className="w-100 btn btn-lg btn-primary mb-3"
             type="button"
+            disabled={pendingApiCall}
             onClick={onClickSignup}
           >
+            {pendingApiCall && (
+              <div 
+className="spinner-border text-light-spinner spinner-border-sm mr-sm-1"
+role="status">
+                <span className="visually-hidden">Aguarde...</span>
+              </div>
+            )}
+
             Cadastrar
           </button>
-          <h2>{form.displayName}</h2>
+          {userSaved && (
+            <div className="col-12 mb-3">
+              <div className="alert alert-success">{userSaved}</div>
+            </div>
+          )}
+          {apiError && (
+            <div className="col-12 mb-3">
+              <div className="alert alert-danger">{apiError}</div>
+            </div>
+          )}
+
         </form>
       </main>
     </>
