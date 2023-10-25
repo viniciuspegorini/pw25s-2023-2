@@ -1,5 +1,8 @@
+import { IUserSignup } from "@/commons/interfaces";
+import AuthService from "@/services/AuthService";
 import axios from "axios";
 import { ChangeEvent, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 export function UserSignupPage() {
   const [form, setForm] = useState({
@@ -15,6 +18,7 @@ export function UserSignupPage() {
   const [pendingApiCall, setPendingApiCall] = useState(false);
   const [userSaved, setUserSaved] = useState('');
   const [apiError, setApiError] = useState('');
+  const navigate = useNavigate();
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -36,11 +40,16 @@ export function UserSignupPage() {
 
   const onClickSignup = () => {
     setPendingApiCall(true);
-    axios
-      .post("http://localhost:8025/users", form)
+    const userSigup : IUserSignup = {
+      displayName: form.displayName,
+      username: form.username,
+      password: form.password
+    }
+    AuthService.signup(userSigup)
       .then((response) => {
         setUserSaved(response.data.message);
         setApiError('');
+        navigate('/login');
       })
       .catch((responseError) => {
         if (responseError.response.data.validationErrors) {
@@ -139,6 +148,10 @@ role="status">
           )}
 
         </form>
+        <div className="text-center">
+          <span>Já possui cadastro </span>
+          <Link to="/login">Autenticar-se</Link>
+        </div>
       </main>
     </>
   );

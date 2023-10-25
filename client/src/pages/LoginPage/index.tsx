@@ -1,5 +1,7 @@
-import axios from "axios";
+import { IUserLogin } from "@/commons/interfaces";
+import AuthService from "@/services/AuthService";
 import { ChangeEvent, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 export function LoginPage() {
   const [form, setForm] = useState({
@@ -13,6 +15,7 @@ export function LoginPage() {
   const [pendingApiCall, setPendingApiCall] = useState(false);
   const [userAuthenticated, setUserAuthenticated] = useState("");
   const [apiError, setApiError] = useState("");
+  const navigate = useNavigate();
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -34,12 +37,19 @@ export function LoginPage() {
 
   const onClickSignup = () => {
     setPendingApiCall(true);
-    console.log(form);
-    axios
-      .post("http://localhost:8025/login", form)
+    const userLogin : IUserLogin = {
+      username: form.username,
+      password: form.password,
+    }
+    AuthService.login(userLogin)
       .then((response) => {
         setUserAuthenticated(response.data.token);
+        localStorage.setItem("token", JSON.stringify(response.data.token) );
+        localStorage.setItem("user", JSON.stringify(response.data.user) );
         setApiError("");
+        setPendingApiCall(false);
+        // direcionar o usuário para a página inicial
+        navigate("/");
       })
       .catch((responseError) => {
         if (responseError.response.data) {          
@@ -119,6 +129,10 @@ export function LoginPage() {
             </div>
           )}
         </form>
+        <div className="text-center">
+          <span>Não possui cadastro</span>
+          <Link to="/signup"> Cadastre-se aqui</Link>
+        </div>
       </main>
     </>
   );
