@@ -1,6 +1,6 @@
 import { IUserSignup } from "@/commons/interfaces";
+import { Input } from "@/components/Input";
 import AuthService from "@/services/AuthService";
-import axios from "axios";
 import { ChangeEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -73,19 +73,17 @@ export function UserSignupPage() {
           </div>
 
           <div className="form-floating mb-3">
-            <input
+            <Input
+              label="Informe seu nome"
               name="displayName"
-              className={
-                errors.displayName ? "form-control is-invalid" : "form-control"
-              }
+              className="form-control"
               type="text"
               placeholder="Informe seu nome"
               onChange={onChange}
+              value={form.displayName}
+              hasError={errors.displayName ? true : false}
+              error={errors.displayName}
             />
-            <label htmlFor="displayName">Informe seu nome</label>
-            {errors.displayName && (
-              <div className="invalid-feedback">{errors.displayName}</div>
-            )}
           </div>
 
           <div className="form-floating mb-3">

@@ -1,4 +1,5 @@
 import { IUserLogin } from "@/commons/interfaces";
+import { Input } from "@/components/Input";
 import AuthService from "@/services/AuthService";
 import { ChangeEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -71,19 +72,17 @@ export function LoginPage() {
           </div>
 
           <div className="form-floating mb-3">
-            <input
+            <Input
+              label="Informe seu usuário"
               name="username"
-              className={
-                errors.username ? "form-control is-invalid" : "form-control"
-              }
+              className="form-control"
               type="text"
               placeholder="Informe seu usuário"
+              value={form.username}
               onChange={onChange}
+              hasError={false}
+              error=""
             />
-            <label htmlFor="username">Informe seu usuário</label>
-            {errors.username && (
-              <div className="invalid-feedback">{errors.username}</div>
-            )}
           </div>
 
           <div className="form-floating mb-3">
