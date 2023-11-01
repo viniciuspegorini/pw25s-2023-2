@@ -1,4 +1,5 @@
 import { IUserSignup } from "@/commons/interfaces";
+import { ButtonWithProgress } from "@/components/ButtonWithProgress";
 import { Input } from "@/components/Input";
 import AuthService from "@/services/AuthService";
 import { ChangeEvent, useState } from "react";
@@ -16,8 +17,8 @@ export function UserSignupPage() {
     password: "",
   });
   const [pendingApiCall, setPendingApiCall] = useState(false);
-  const [userSaved, setUserSaved] = useState('');
-  const [apiError, setApiError] = useState('');
+  const [userSaved, setUserSaved] = useState("");
+  const [apiError, setApiError] = useState("");
   const navigate = useNavigate();
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -40,23 +41,23 @@ export function UserSignupPage() {
 
   const onClickSignup = () => {
     setPendingApiCall(true);
-    const userSigup : IUserSignup = {
+    const userSigup: IUserSignup = {
       displayName: form.displayName,
       username: form.username,
-      password: form.password
-    }
+      password: form.password,
+    };
     AuthService.signup(userSigup)
       .then((response) => {
         setUserSaved(response.data.message);
-        setApiError('');
-        navigate('/login');
+        setApiError("");
+        navigate("/login");
       })
       .catch((responseError) => {
         if (responseError.response.data.validationErrors) {
           setErrors(responseError.response.data.validationErrors);
-          
+
           setApiError(responseError.response.data.message);
-          setUserSaved('');
+          setUserSaved("");
         }
       })
       .finally(() => {
@@ -118,22 +119,14 @@ export function UserSignupPage() {
             )}
           </div>
 
-          <button
-            className="w-100 btn btn-lg btn-primary mb-3"
-            type="button"
+          <ButtonWithProgress
             disabled={pendingApiCall}
+            className="w-100 btn btn-lg btn-primary mb-3"
             onClick={onClickSignup}
-          >
-            {pendingApiCall && (
-              <div 
-className="spinner-border text-light-spinner spinner-border-sm mr-sm-1"
-role="status">
-                <span className="visually-hidden">Aguarde...</span>
-              </div>
-            )}
+            pendingApiCall={pendingApiCall}
+            text="Cadastrar"
+          />
 
-            Cadastrar
-          </button>
           {userSaved && (
             <div className="col-12 mb-3">
               <div className="alert alert-success">{userSaved}</div>
@@ -144,7 +137,6 @@ role="status">
               <div className="alert alert-danger">{apiError}</div>
             </div>
           )}
-
         </form>
         <div className="text-center">
           <span>Já possui cadastro </span>

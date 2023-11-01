@@ -1,4 +1,5 @@
 import { IUserLogin } from "@/commons/interfaces";
+import { ButtonWithProgress } from "@/components/ButtonWithProgress";
 import { Input } from "@/components/Input";
 import AuthService from "@/services/AuthService";
 import { ChangeEvent, useState } from "react";
@@ -36,7 +37,7 @@ export function LoginPage() {
     });
   };
 
-  const onClickSignup = () => {
+  const onClickLogin = () => {
     setPendingApiCall(true);
     const userLogin : IUserLogin = {
       username: form.username,
@@ -101,22 +102,14 @@ export function LoginPage() {
             )}
           </div>
 
-          <button
-            className="w-100 btn btn-lg btn-primary mb-3"
-            type="button"
+          <ButtonWithProgress
             disabled={pendingApiCall}
-            onClick={onClickSignup}
-          >
-            {pendingApiCall && (
-              <div
-                className="spinner-border text-light-spinner spinner-border-sm mr-sm-1"
-                role="status"
-              >
-                <span className="visually-hidden">Aguarde...</span>
-              </div>
-            )}
-            Login
-          </button>
+            className="w-100 btn btn-lg btn-primary mb-3"
+            onClick={onClickLogin}
+            pendingApiCall={pendingApiCall}
+            text="Entrar"
+          />
+          
           {userAuthenticated && (
             <div className="col-12 mb-3">
               <div className="alert alert-success">{userAuthenticated}</div>

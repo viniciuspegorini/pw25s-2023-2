@@ -23,4 +23,8 @@ public class CategoryServiceImpl extends CrudServiceImpl<Category, Long>
         return categoryRepository;
     }
 
+    @Override
+    public void delete(Long id) {
+        super.delete(id);
+    }
 }

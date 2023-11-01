@@ -31,4 +31,16 @@ public class ExceptionHandlerAdvice {
                 validationErrors);
     }
 
+    @ExceptionHandler({Exception.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handlerValidationException(
+            Exception exception,
+            HttpServletRequest request
+    ) {
+
+        return new ApiError(400, "Ocorreu um erro!",
+                request.getServletPath(),
+                null);
+    }
+
 }

@@ -33,7 +33,7 @@ export function Input({
         placeholder={placeholder}
         onChange={onChange}
         value={value}
-      />
+      />      
       {label && <label htmlFor={name}>{label}</label>}
       {hasError && <div className="invalid-feedback">{error}</div>}
     </>
