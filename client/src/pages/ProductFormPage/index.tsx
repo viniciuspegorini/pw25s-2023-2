@@ -45,7 +45,7 @@ export function ProductFormPage() {
         setCategories(response.data);
         setApiError("");
       })
-      .catch((erro) => {
+      .catch(() => {
         setApiError("Falha ao carregar a combo de categorias.");
       });
 

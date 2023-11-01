@@ -39,22 +39,22 @@ export function LoginPage() {
 
   const onClickLogin = () => {
     setPendingApiCall(true);
-    const userLogin : IUserLogin = {
+    const userLogin: IUserLogin = {
       username: form.username,
       password: form.password,
-    }
+    };
     AuthService.login(userLogin)
       .then((response) => {
         setUserAuthenticated(response.data.token);
-        localStorage.setItem("token", JSON.stringify(response.data.token) );
-        localStorage.setItem("user", JSON.stringify(response.data.user) );
+        localStorage.setItem("token", JSON.stringify(response.data.token));
+        localStorage.setItem("user", JSON.stringify(response.data.user));
         setApiError("");
         setPendingApiCall(false);
         // direcionar o usuário para a página inicial
         navigate("/");
       })
       .catch((responseError) => {
-        if (responseError.response.data) {          
+        if (responseError.response.data) {
           setApiError(responseError.response.data.message);
           setUserAuthenticated("");
         }
@@ -109,7 +109,7 @@ export function LoginPage() {
             pendingApiCall={pendingApiCall}
             text="Entrar"
           />
-          
+
           {userAuthenticated && (
             <div className="col-12 mb-3">
               <div className="alert alert-success">{userAuthenticated}</div>
@@ -122,8 +122,8 @@ export function LoginPage() {
           )}
         </form>
         <div className="text-center">
-          <span>Não possui cadastro</span>
-          <Link to="/signup"> Cadastre-se aqui</Link>
+          <span>Não possui cadastro </span>
+          <Link to="/signup">Cadastre-se aqui</Link>
         </div>
       </main>
     </>

@@ -53,6 +53,7 @@ export function CategoryFormPage() {
   };
 
   const onSubmit = () => {
+
     const category: ICategory = {
       id: form.id,
       name: form.name

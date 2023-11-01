@@ -48,10 +48,10 @@ export function NavBar() {
                 Produtos
               </NavLink>
             </li>
-            {/*
+            
             <li className="nav-item">
               <NavLink
-                to="/product-v2"
+                to="/products-v2"
                 className={(navData) =>
                   navData.isActive ? "nav-link active" : "nav-link"
                 }
@@ -59,7 +59,7 @@ export function NavBar() {
                 Produtos V2
               </NavLink>
             </li>
-            */}
+            
             <li className="nav-item">
               <button className="btn btn-light" onClick={onClickLogout}>
                 &times; Sair
